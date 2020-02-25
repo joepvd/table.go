@@ -1,12 +1,19 @@
 package main
 
 import (
-	"flag"
 	"fmt"
-	"github.com/joepvd/table.go"
 	"os"
 	"regexp"
+
+	"github.com/jessevdk/go-flags"
+	"github.com/joepvd/table.go"
 )
+
+var opts struct {
+	Style string `short:"s" long:"style"`
+	FS    string `short:"F" long:"field-seperator" default:"[ \t]+"`
+}
+var files []string
 
 func check(e error) {
 	if e != nil {
@@ -14,17 +21,22 @@ func check(e error) {
 	}
 }
 
-func main() {
-	flag.Parse()
+func init() {
 	var err error
-	var fileHandle *os.File
+	files, err = flags.Parse(&opts)
+	check(err)
+}
 
-	switch flag.NArg() {
+func main() {
+	var fileHandle *os.File
+	var err error
+
+	switch len(files) {
 	case 0:
 		fileHandle = os.Stdin
 		break
 	case 1:
-		fileHandle, err = os.Open(flag.Arg(0))
+		fileHandle, err = os.Open(files[0])
 		check(err)
 		break
 	default:
@@ -33,7 +45,7 @@ func main() {
 	}
 	defer fileHandle.Close()
 
-	fs := regexp.MustCompile(`[ \t]+`)
+	fs := regexp.MustCompile(opts.FS)
 	contents := table.ParseText(fileHandle, fs)
 	fmt.Printf("%#v\n", contents)
 }

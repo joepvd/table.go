@@ -6,6 +6,9 @@ SOURCEFILES := $(filter-out $(TESTS), $(GOFILES))
 ENTRY := cmd/table.go
 TARGET := table
 
+.PHONY: all
+all: clean build test
+
 .PHONY: build
 build: $(TARGET)
 
@@ -16,18 +19,24 @@ $(TARGET): $(SOURCEFILES)
 
 test: integration-test unit-test lint
 
-integration-test: build
-	for f in test/*; do $$f; done
+integration-test: build .ensure-bats .ensure-git
+	test/end-to-end
 
-unit-test:
+unit-test: .ensure-go $(GOFILES)
 	go test -coverprofile=cover.out ./...
 
-lint: .ensure-lint
+lint: .ensure-golint
 	golint -set_exit_status ./...
 
-.PHONY: .ensure-lint
-.ensure-lint:
-	if ! command -v go lint >/dev/null 2>&1; then go get -u golang.org/x/lint/golint; fi
+cover.out: unit-test
+
+.PHONY: cover-report
+cover-report: cover.out
+	go tool cover -html=cover.out
+
+.PHONY: .ensure-bats .ensure-golint .ensure-go .ensure-git 
+.ensure-%:
+	@command -v $* >/dev/null 2>&1 || echo Missing $*
 
 .PHONY: clean
 clean:

@@ -1,1 +1,23 @@
-go run cmd/table.go
+#!/usr/bin/env -S bats --pretty
+
+repo="$(git rev-parse --show-toplevel)"
+binary="$repo/table"
+testdir="$repo/test"
+
+[[ -x "$binary" ]] || {
+  echo No binary $binary found. Exiting.>/dev/stderr
+  exit 1
+}
+
+# for test_file in "$testdir"/*.test; do
+#   echo ${test_file##*/}
+#   t="${test_file##*/}"
+#   echo $t ${t/.test}
+# done
+
+
+
+@test "running the binary" {
+  run $binary <<<'niceness very nice'
+  [ "$status" -eq 0 ]
+}

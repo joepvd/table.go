@@ -7,11 +7,13 @@ import (
 	"regexp"
 )
 
+// LineRecord stores stuff from a line
 type LineRecord struct {
 	NF     int
 	Fields []string
 }
 
+// Content stores content of the table. Contains LineRecords
 type Content struct {
 	NR      int
 	MaxFS   int
@@ -26,6 +28,7 @@ func parseLine(s string, re *regexp.Regexp) LineRecord {
 	}
 }
 
+// ParseText reads file and converts it to Content
 func ParseText(file *os.File, re *regexp.Regexp) Content {
 	reader := bufio.NewScanner(file)
 	var content Content
