@@ -3,6 +3,7 @@ package table
 import (
 	"bufio"
 	"fmt"
+	"io"
 	"os"
 	"regexp"
 )
@@ -17,31 +18,59 @@ type LineRecord struct {
 type Content struct {
 	NR      int
 	MaxFS   int
+	Widths  []int
 	Records []LineRecord
 }
 
-func parseLine(s string, re *regexp.Regexp) LineRecord {
+func parseLine(s string, re *regexp.Regexp) (LineRecord, bool) {
+	var nf int
+	ok := false
+	reStart := regexp.MustCompile(fmt.Sprintf("^%s", re.String()))
+	s = reStart.ReplaceAllString(s, "")
+
+	reEnd := regexp.MustCompile(fmt.Sprintf("%s$", re.String()))
+	s = reEnd.ReplaceAllString(s, "")
+
 	fields := re.Split(s, -1)
-	return LineRecord{
-		len(fields),
-		fields,
+	for _, v := range fields {
+		if len(v) > 0 {
+			ok = true
+		}
 	}
+	if ok {
+		nf = len(fields)
+	} else {
+		nf = 0
+	}
+
+	return LineRecord{
+		nf,
+		fields,
+	}, ok
 }
 
-// ParseText reads file and converts it to Content
-func ParseText(file *os.File, re *regexp.Regexp) Content {
-	reader := bufio.NewScanner(file)
-	var content Content
+// ParseFile passes file handle on to ParseText
+func ParseFile(file *os.File, re *regexp.Regexp) Content {
+	reader := bufio.NewReader(file)
+	return ParseText(reader, re)
+}
 
-	for reader.Scan() {
-		line := reader.Text()
-		splitted := parseLine(line, re)
-		content.Records = append(content.Records, splitted)
-		content.NR = content.NR + 1
-		content.MaxFS = max(content.MaxFS, splitted.NF)
+// ParseText takes a reader and converts it to Content
+func ParseText(reader io.Reader, re *regexp.Regexp) Content {
+	var content Content
+	scanner := bufio.NewScanner(reader)
+
+	for scanner.Scan() {
+		line := scanner.Text()
+		splitted, ok := parseLine(line, re)
+		if ok {
+			content.Records = append(content.Records, splitted)
+			content.NR = content.NR + 1
+			content.MaxFS = max(content.MaxFS, splitted.NF)
+		}
 	}
 
-	if reader.Err() != nil {
+	if scanner.Err() != nil {
 		fmt.Println("Error")
 	}
 	return content

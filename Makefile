@@ -23,7 +23,10 @@ integration-test: build .ensure-bats .ensure-git
 	test/end-to-end
 
 unit-test: .ensure-go $(GOFILES)
-	go test -coverprofile=cover.out ./...
+	go test -v -coverprofile=cover.out ./...
+
+.PHONY: unit
+unit: unit-test
 
 lint: .ensure-golint
 	golint -set_exit_status ./...

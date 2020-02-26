@@ -21,3 +21,12 @@ testdir="$repo/test"
   run $binary <<<'niceness very nice'
   [ "$status" -eq 0 ]
 }
+
+@test "output" {
+  in=$'aaa\nbb\ncccccc'
+  expected=$'┌────────┐\n│ aaa    │\n├────────┤\n│ bb     │\n│ cccccc │\n└────────┘\n'
+  run $binary <<<"$in"
+  [[ "$status" == 0 ]]
+  skip "This is a WIP"
+  [[ "$output" == "$expected" ]]
+}
