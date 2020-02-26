@@ -48,5 +48,4 @@ func main() {
 	fs := regexp.MustCompile(opts.FS)
 	contents := table.ParseText(fileHandle, fs)
 	fmt.Printf("%#v\n", contents)
-
 }

@@ -22,6 +22,17 @@ type Content struct {
 	Records []LineRecord
 }
 
+func (c *Content) setWidths(l LineRecord) error {
+	for i, txt := range l.Fields {
+		if len(c.Widths) <= i {
+			c.Widths = append(c.Widths, len(txt))
+		} else {
+			c.Widths[i] = max(len(txt), c.Widths[i])
+		}
+	}
+	return nil
+}
+
 func parseLine(s string, re *regexp.Regexp) (LineRecord, bool) {
 	var nf int
 	ok := false
@@ -44,8 +55,8 @@ func parseLine(s string, re *regexp.Regexp) (LineRecord, bool) {
 	}
 
 	return LineRecord{
-		nf,
-		fields,
+		NF:     nf,
+		Fields: fields,
 	}, ok
 }
 
@@ -67,6 +78,7 @@ func ParseText(reader io.Reader, re *regexp.Regexp) Content {
 			content.Records = append(content.Records, splitted)
 			content.NR = content.NR + 1
 			content.MaxFS = max(content.MaxFS, splitted.NF)
+			content.setWidths(splitted)
 		}
 	}
 
