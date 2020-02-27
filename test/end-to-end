@@ -1,32 +1,88 @@
 #!/usr/bin/env -S bats --pretty
+# vim: set ft=sh:
 
 repo="$(git rev-parse --show-toplevel)"
 binary="$repo/table"
-testdir="$repo/test"
 
-[[ -x "$binary" ]] || {
-  echo No binary $binary found. Exiting.>/dev/stderr
-  exit 1
+@test "binary exists" {
+  [[ -x "$binary" ]]
 }
-
-# for test_file in "$testdir"/*.test; do
-#   echo ${test_file##*/}
-#   t="${test_file##*/}"
-#   echo $t ${t/.test}
-# done
-
-
 
 @test "running the binary" {
   run $binary <<<'niceness very nice'
   [ "$status" -eq 0 ]
 }
 
-@test "output" {
-  in=$'aaa\nbb\ncccccc'
-  expected=$'┌────────┐\n│ aaa    │\n├────────┤\n│ bb     │\n│ cccccc │\n└────────┘\n'
-  run $binary <<<"$in"
+in="$(cat <<-EOF
+	1234 567 789000
+	3 4 5
+	67890 345 6788
+EOF
+)"
+
+md_expected="$(cat <<-EOF
+	| 1234  | 567 | 789000 |
+	| ----- | --- | ------ |
+	| 3     | 4   | 5      |
+	| 67890 | 345 | 6788   |
+EOF
+)"
+
+psql_expected="$(cat <<-EOF
+	┌───────┬─────┬────────┐
+	│ 1234  │ 567 │ 789000 │
+	├───────┼─────┼────────┤
+	│ 3     │ 4   │ 5      │
+	│ 67890 │ 345 │ 6788   │
+	└───────┴─────┴────────┘
+EOF
+)"
+
+jira_expected="$(cat <<-EOF
+	|| 1234  || 567 || 789000 ||
+	|  3     |  4   |  5       |
+	|  67890 |  345 |  6788    |
+EOF
+)"
+
+rst_expected="$(cat <<-EOF
+	    +-------+-----+--------+
+	    | 1234  | 567 | 789000 |
+	    +=======+=====+========+
+	    | 3     | 4   | 5      |
+	    +-------+-----+--------+
+	    | 67890 | 345 | 6788   |
+	    +-------+-----+--------+
+EOF
+)"
+
+@test "output md" {
+  run "$binary" --style md <<<"$in"
+
   [[ "$status" == 0 ]]
+  [[ "$output" == "$md_expected" ]]
+}
+
+@test "output psql" {
+  run $binary --style psql <<<"$in"
+
   skip "This is a WIP"
-  [[ "$output" == "$expected" ]]
+  [[ "$status" == 0 ]]
+  [[ "$output" == "$psql_expected" ]]
+}
+
+@test "output jira" {
+  run $binary --style jira <<<"$in"
+
+  skip "This is a WIP"
+  [[ "$status" == 0 ]]
+  [[ "$output" == "$jira_expected" ]]
+}
+
+@test "output rst" {
+  run $binary --style rst <<<"$in"
+
+  skip "This is a WIP"
+  [[ "$status" == 0 ]]
+  [[ "$output" == "$rst_expected" ]]
 }

@@ -9,11 +9,8 @@ import (
 	"github.com/joepvd/table.go"
 )
 
-var opts struct {
-	Style string `short:"s" long:"style"`
-	FS    string `short:"F" long:"field-seperator" default:"[ \t]+"`
-}
 var files []string
+var opts table.Options
 
 func check(e error) {
 	if e != nil {
@@ -40,12 +37,12 @@ func main() {
 		check(err)
 		break
 	default:
-		fmt.Printf("input must be from stdin or file\n")
+		fmt.Printf("input must be from stdin or single file\n")
 		os.Exit(1)
 	}
 	defer fileHandle.Close()
 
 	fs := regexp.MustCompile(opts.FS)
 	contents := table.ParseText(fileHandle, fs)
-	fmt.Printf("%#v\n", contents)
+	fmt.Printf(table.Output(contents, opts))
 }
