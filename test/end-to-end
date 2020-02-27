@@ -58,6 +58,14 @@ EOF
   [[ "$output" == "$md_expected" ]]
 }
 
+@test "run from file" {
+  echo "$in" >tmpfile
+  run $binary tmpfile
+
+  [[ "$status" == 0 ]]
+  [[ "$output" == "$md_expected" ]]
+  rm -f tmpfile
+}
 
 @test "output md" {
   run "$binary" --style md <<<"$in"
@@ -76,7 +84,6 @@ EOF
 @test "output jira" {
   run $binary --style jira <<<"$in"
 
-  skip "This is a WIP"
   [[ "$status" == 0 ]]
   [[ "$output" == "$jira_expected" ]]
 }

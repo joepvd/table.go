@@ -13,6 +13,8 @@ func Output(c Content, o Options) string {
 		outputter = markdownOutputter{Content: c, Options: o}
 	case "psql":
 		outputter = psqlOutputter{Content: c, Options: o}
+	case "jira":
+		outputter = jiraOutputter{Content: c, Options: o}
 	default:
 		errors.New("Outputter not implemented error")
 	}
