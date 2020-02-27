@@ -8,11 +8,6 @@ binary="$repo/table"
   [[ -x "$binary" ]]
 }
 
-@test "running the binary" {
-  run $binary <<<'niceness very nice'
-  [ "$status" -eq 0 ]
-}
-
 in="$(cat <<-EOF
 	1234 567 789000
 	3 4 5
@@ -56,6 +51,14 @@ rst_expected="$(cat <<-EOF
 EOF
 )"
 
+@test "running the binary" {
+  run $binary <<<"$in"
+
+  [[ "$status" == 0 ]]
+  [[ "$output" == "$md_expected" ]]
+}
+
+
 @test "output md" {
   run "$binary" --style md <<<"$in"
 
@@ -66,7 +69,6 @@ EOF
 @test "output psql" {
   run $binary --style psql <<<"$in"
 
-  skip "This is a WIP"
   [[ "$status" == 0 ]]
   [[ "$output" == "$psql_expected" ]]
 }

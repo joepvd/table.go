@@ -28,8 +28,9 @@ unit-test: .ensure-go $(GOFILES)
 .PHONY: unit
 unit: unit-test
 
-lint: .ensure-golint
+lint: .ensure-golint .ensure-golangci-lint
 	golint -set_exit_status ./...
+	golangci-lint run
 
 cover.out: unit-test
 
@@ -37,7 +38,7 @@ cover.out: unit-test
 cover-report: cover.out
 	go tool cover -html=cover.out
 
-.PHONY: .ensure-bats .ensure-golint .ensure-go .ensure-git 
+.PHONY: .ensure-bats .ensure-golint .ensure-go .ensure-git .ensure-golangci-lint
 .ensure-%:
 	@command -v $* >/dev/null 2>&1 || echo Missing $*
 

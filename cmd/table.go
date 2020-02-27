@@ -6,7 +6,7 @@ import (
 	"regexp"
 
 	"github.com/jessevdk/go-flags"
-	"github.com/joepvd/table.go"
+	table "github.com/joepvd/table.go"
 )
 
 var files []string
@@ -31,11 +31,9 @@ func main() {
 	switch len(files) {
 	case 0:
 		fileHandle = os.Stdin
-		break
 	case 1:
 		fileHandle, err = os.Open(files[0])
 		check(err)
-		break
 	default:
 		fmt.Printf("input must be from stdin or single file\n")
 		os.Exit(1)
@@ -44,5 +42,5 @@ func main() {
 
 	fs := regexp.MustCompile(opts.FS)
 	contents := table.ParseText(fileHandle, fs)
-	fmt.Printf(table.Output(contents, opts))
+	fmt.Printf("%s", table.Output(contents, opts))
 }
