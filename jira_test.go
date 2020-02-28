@@ -30,14 +30,14 @@ func TestJira(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("%sHeader", test.name), func(t *testing.T) {
-			o := jiraOutputter{Content: test.input, Options: Options{}}
+			o := jira{Content: test.input, Options: Options{}}
 			got := o.header()
 			if got != test.expectedHeader {
 				t.Errorf("TestJiraHeader: got: %s, expected: %s", got, test.expectedHeader)
 			}
 		})
 		t.Run(fmt.Sprintf("%sBody", test.name), func(t *testing.T) {
-			o := jiraOutputter{Content: test.input, Options: Options{}}
+			o := jira{Content: test.input, Options: Options{}}
 			got := o.record()
 			if got != test.expectedBody {
 				t.Errorf("TestJiraBody: got: %s, expected: %s", got, test.expectedBody)

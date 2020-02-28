@@ -11,11 +11,11 @@ func Output(c Content, o Options) (string, error) {
 	var outputter format
 	switch style := o.Style; style {
 	case "md":
-		outputter = markdownOutputter{Content: c, Options: o}
+		outputter = md{Content: c, Options: o}
 	case "psql":
-		outputter = psqlOutputter{Content: c, Options: o}
+		outputter = psql{Content: c, Options: o}
 	case "jira":
-		outputter = jiraOutputter{Content: c, Options: o}
+		outputter = jira{Content: c, Options: o}
 	default:
 		e = errors.New("Outputter not implemented error")
 	}

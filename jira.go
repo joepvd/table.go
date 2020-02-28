@@ -4,7 +4,7 @@ import (
 	"fmt"
 )
 
-type jiraOutputter struct {
+type jira struct {
 	Content Content
 	Options Options
 }
@@ -27,13 +27,13 @@ func jiraTxt(s []string, widths []int, mode string) (out string) {
 	return out
 }
 
-func (m jiraOutputter) header() string {
+func (m jira) header() string {
 	widths := m.Content.Widths
 	txt := jiraTxt(m.Content.Records[0].Fields, widths, "header")
 	return txt
 }
 
-func (m jiraOutputter) record() (out string) {
+func (m jira) record() (out string) {
 	widths := m.Content.Widths
 	for i := 1; i < m.Content.NR; i++ {
 		fields := m.Content.Records[i].Fields

@@ -30,14 +30,14 @@ var tests = []struct {
 func TestMarkdown(t *testing.T) {
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("%sHeader", test.name), func(t *testing.T) {
-			o := markdownOutputter{Content: test.input, Options: Options{}}
+			o := md{Content: test.input, Options: Options{}}
 			got := o.header()
 			if got != test.expectedHeader {
 				t.Errorf("TestMarkdownHeader: got: %s, expected: %s", got, test.expectedHeader)
 			}
 		})
 		t.Run(fmt.Sprintf("%sBody", test.name), func(t *testing.T) {
-			o := markdownOutputter{Content: test.input, Options: Options{}}
+			o := md{Content: test.input, Options: Options{}}
 			got := o.record()
 			if got != test.expectedBody {
 				t.Errorf("TestMarkdownBody: got: %s, expected: %s", got, test.expectedBody)

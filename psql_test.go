@@ -75,14 +75,14 @@ func TestPsql(t *testing.T) {
 
 	for _, test := range tests {
 		t.Run(fmt.Sprintf("%sHeader", test.name), func(t *testing.T) {
-			o := psqlOutputter{Content: test.input, Options: Options{}}
+			o := psql{Content: test.input, Options: Options{}}
 			got := o.header()
 			if got != test.expectedHeader {
 				t.Errorf("TestPsqlHeader: got: %s, expected: %s", got, test.expectedHeader)
 			}
 		})
 		t.Run(fmt.Sprintf("%sBody", test.name), func(t *testing.T) {
-			o := psqlOutputter{Content: test.input, Options: Options{}}
+			o := psql{Content: test.input, Options: Options{}}
 			got := o.record()
 			if got != test.expectedBody {
 				t.Errorf("TestPsqlBody: got: %s, expected: %s", got, test.expectedBody)

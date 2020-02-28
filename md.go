@@ -5,12 +5,12 @@ import (
 	"strings"
 )
 
-type markdownOutputter struct {
+type md struct {
 	Content Content
 	Options Options
 }
 
-func (m markdownOutputter) fline(s []string, widths []int) (out string) {
+func (m md) fline(s []string, widths []int) (out string) {
 	var cell string
 	for i, w := range widths {
 		f := fmt.Sprintf("%%-%ds", w)
@@ -28,7 +28,7 @@ func mdSeperator(widths []int) (out []string) {
 	return out
 }
 
-func (m markdownOutputter) header() string {
+func (m md) header() string {
 	widths := m.Content.Widths
 	txt := m.fline(m.Content.Records[0].Fields, widths)
 	sep := m.fline(mdSeperator(widths), widths)
@@ -36,7 +36,7 @@ func (m markdownOutputter) header() string {
 	return out
 }
 
-func (m markdownOutputter) record() string {
+func (m md) record() string {
 	var out string
 	for i := 1; i < m.Content.NR; i++ {
 		record := m.Content.Records[i]

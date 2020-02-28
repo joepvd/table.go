@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type psqlOutputter struct {
+type psql struct {
 	Content Content
 	Options Options
 }
@@ -25,7 +25,7 @@ func psqlTxt(s []string, widths []int) (out string) {
 	return out
 }
 
-func (m psqlOutputter) header() string {
+func (m psql) header() string {
 	widths := m.Content.Widths
 	top := psqlFiller(widths, []string{"┌", "─", "┬", "┐"})
 	txt := psqlTxt(m.Content.Records[0].Fields, widths)
@@ -45,7 +45,7 @@ func psqlFiller(widths []int, seps []string) (out string) {
 	return out
 }
 
-func (m psqlOutputter) record() (out string) {
+func (m psql) record() (out string) {
 	widths := m.Content.Widths
 	for i := 1; i < m.Content.NR; i++ {
 		record := m.Content.Records[i]
