@@ -83,7 +83,7 @@ func TestPsql(t *testing.T) {
 		})
 		t.Run(fmt.Sprintf("%sBody", test.name), func(t *testing.T) {
 			o := psql{Content: test.input, Options: Options{}}
-			got := o.record()
+			got := o.body()
 			if got != test.expectedBody {
 				t.Errorf("TestPsqlBody: got: %s, expected: %s", got, test.expectedBody)
 			}

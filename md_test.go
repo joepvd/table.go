@@ -38,7 +38,7 @@ func TestMarkdown(t *testing.T) {
 		})
 		t.Run(fmt.Sprintf("%sBody", test.name), func(t *testing.T) {
 			o := md{Content: test.input, Options: Options{}}
-			got := o.record()
+			got := o.body()
 			if got != test.expectedBody {
 				t.Errorf("TestMarkdownBody: got: %s, expected: %s", got, test.expectedBody)
 			}

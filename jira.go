@@ -9,6 +9,10 @@ type jira struct {
 	Options Options
 }
 
+func (m jira) format() string {
+	return fmt.Sprintf("%s%s", m.header(), m.body())
+}
+
 func jiraTxt(s []string, widths []int, mode string) (out string) {
 	var cell string
 	c := "| "
@@ -33,7 +37,7 @@ func (m jira) header() string {
 	return txt
 }
 
-func (m jira) record() (out string) {
+func (m jira) body() (out string) {
 	widths := m.Content.Widths
 	for i := 1; i < m.Content.NR; i++ {
 		fields := m.Content.Records[i].Fields
