@@ -42,5 +42,7 @@ func main() {
 
 	fs := regexp.MustCompile(opts.FS)
 	contents := table.ParseText(fileHandle, fs)
-	fmt.Printf("%s", table.Output(contents, opts))
+	output, err := table.Output(contents, opts)
+	check(err)
+	fmt.Printf("%s", output)
 }

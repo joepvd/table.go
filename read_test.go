@@ -132,7 +132,10 @@ func TestSetWidths(t *testing.T) {
 				Records: []LineRecord{},
 			}
 			ok := true
-			c.setWidths(record.line)
+			e := c.setWidths(record.line)
+			if e != nil {
+				panic(e)
+			}
 			for i, j := range record.expected {
 				if j != c.Widths[i] {
 					ok = false

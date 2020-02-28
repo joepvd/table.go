@@ -6,7 +6,8 @@ import (
 )
 
 // Output is entry function for outputting the table
-func Output(c Content, o Options) string {
+func Output(c Content, o Options) (string, error) {
+	var e error
 	var outputter format
 	switch style := o.Style; style {
 	case "md":
@@ -16,11 +17,11 @@ func Output(c Content, o Options) string {
 	case "jira":
 		outputter = jiraOutputter{Content: c, Options: o}
 	default:
-		errors.New("Outputter not implemented error")
+		e = errors.New("Outputter not implemented error")
 	}
 	h := outputter.header()
 	b := outputter.record()
-	return fmt.Sprintf("%s%s", h, b)
+	return fmt.Sprintf("%s%s", h, b), e
 }
 
 type format interface {

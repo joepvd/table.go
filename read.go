@@ -78,7 +78,10 @@ func ParseText(reader io.Reader, re *regexp.Regexp) Content {
 			content.Records = append(content.Records, splitted)
 			content.NR = content.NR + 1
 			content.MaxFS = max(content.MaxFS, splitted.NF)
-			content.setWidths(splitted)
+			e := content.setWidths(splitted)
+			if e != nil {
+				panic(e)
+			}
 		}
 	}
 
