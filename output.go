@@ -24,4 +24,6 @@ func Output(c Content, o Options) (string, error) {
 
 type format interface {
 	format() string
+	header() string
+	body() string
 }
