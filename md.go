@@ -36,7 +36,11 @@ func (m md) fline(s []string, widths []int) (out string) {
 	var cell string
 	for i, w := range widths {
 		f := fmt.Sprintf("%%-%ds", w)
-		cell = fmt.Sprintf(f, s[i])
+		word := ""
+		if i < len(s) {
+			word = s[i]
+		}
+		cell = fmt.Sprintf(f, word)
 		out = fmt.Sprintf("%s| %s ", out, cell)
 	}
 	out = fmt.Sprintf("%s|\n", out)

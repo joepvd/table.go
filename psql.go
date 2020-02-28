@@ -41,7 +41,11 @@ func psqlTxt(s []string, widths []int) (out string) {
 			c = "│"
 		}
 		f := fmt.Sprintf("%%-%ds", w)
-		cell = fmt.Sprintf(f, s[i])
+		word := ""
+		if i < len(s) {
+			word = s[i]
+		}
+		cell = fmt.Sprintf(f, word)
 		out = fmt.Sprintf("%s%s %s ", out, c, cell)
 	}
 	out = fmt.Sprintf("%s│", out)
